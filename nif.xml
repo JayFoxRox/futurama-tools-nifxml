@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE niftoolsxml>
 <niftoolsxml version="0.9.1.0">
+
     <!--These are the version numbers marked as supported by NifSkope.
         The num argument is the numeric representation created by storing
         each part of the version in a byte.  For example, 4.0.0.2 is
@@ -2581,6 +2582,11 @@
         A generic extra data object.
         <add name="Name" type="string" ver1="10.0.1.0" cond="!BSExtraData">Name of this object.</add>
         <add name="Next Extra Data" type="Ref" template="NiExtraData" ver2="4.2.2.0">Block number of the next extra data object.</add>
+
+        <!-- FIXME: This breaks all inhereting types?! -->
+        <add name="Length" type="uint">The data length.</add>
+        <add name="Data" type="byte" arr1="Length">The data itself</add>
+
     </niobject>
 
     <niobject name="NiInterpolator" abstract="1" inherit="NiObject">
@@ -4461,6 +4467,7 @@
         <add name="Is Static" type="byte" default="1">If set, then the application cannot assume that any dynamic changes to the pixel data will show in the rendered image.</add>
         <add name="Direct Render" type="bool" default="1" ver1="10.1.0.103">A hint to the renderer that the texture can be loaded directly from a texture file into a renderer-specific resource, bypassing the NiPixelData object.</add>
         <add name="Persist Render Data" type="bool" default="0" ver1="20.2.0.4">Pixel Data is NiPersistentSrcTextureRendererData instead of NiPixelData.</add>
+        <add name="Unknown data 1" type="uint" ver2="4.2.1.0">Unknown.</add>
     </niobject>
 
     <niobject name="NiSpecularProperty" abstract="0" inherit="NiProperty">
@@ -4513,8 +4520,8 @@
     <niobject name="NiStringExtraData" abstract="0" inherit="NiExtraData">
         Apparently commands for an optimizer instructing it to keep things it would normally discard.
         Also refers to NiNode objects (through their name) in animation .kf files.
-        <add name="Bytes Remaining" type="uint" ver2="4.2.2.0">The number of bytes left in the record.  Equals the length of the following string + 4.</add>
-        <add name="String Data" type="string">The string.</add>
+        <add name="Bytes Remaining" type="uint" ver2="4.2.0.0">The number of bytes left in the record.  Equals the length of the following string + 4.</add>
+        <add name="String Data" type="string" ver1="4.2.2.0">The string.</add>
     </niobject>
 
     <niobject name="NiStringPalette" abstract="0" inherit="NiObject">
@@ -5183,7 +5190,10 @@
     <niobject name="NiRoom" inherit="NiNode">
         NiRoom objects represent cells in a cell-portal culling system.
         <add name="Num Walls" type="int" />
+<!--
         <add name="Wall Planes" type="NiPlane" arr1="Num Walls" />
+-->
+        <add name="Walls" type="Ptr" template="NiWall" arr1="Num Walls">Face normal and unknown value.</add>
         <add name="Num In Portals" type="uint" />
         <add name="In Portals" type="Ptr" template="NiPortal" arr1="Num In Portals">The portals which see into the room.</add>
         <add name="Num Out Portals" type="uint" />
@@ -5196,7 +5206,7 @@
         NiPortal objects are grouping nodes that support aggressive visibility culling.
         They represent flat polygonal regions through which a part of a scene graph can be viewed.
         <add name="Portal Flags" type="ushort" />
-        <add name="Plane Count" type="ushort">Unused in 20.x, possibly also 10.x.</add>
+        <add name="Plane Count" type="ushort" ver1="4.2.2.0">Unused in 20.x, possibly also 10.x.</add>
         <add name="Num Vertices" type="ushort" />
         <add name="Vertices" type="Vector3" arr1="Num Vertices" />
         <add name="Adjoiner" type="Ptr" template="NiNode">Root of the scenegraph which is to be seen through this portal.</add>
@@ -7079,8 +7089,7 @@
         <add name="Num Bones 2" type="uint" />
         <add name="Bones" type="Ref" arr1="Num Bones 2" template="NiNode">Unknown</add>
     </niobject>
-    
-    
+        
     <!-- Fallout 4 Geometry -->
     
     <niobject name="BSTriShape" abstract="0" inherit="NiAVObject">
@@ -7317,4 +7326,136 @@
 		<add name="Large Ref" type="bool" />
 	</niobject>
 	
+
+  <!-- Futurama -->
+
+
+    <niobject name="NiUDSNode" inherit="NiAVObject">
+        Node used in Futurama video-game; developed by Unique Development Studios (UDS).
+<!--
+        <add name="Name" type="string">Name of this object.</add>
+        <add name="Unk0" type="uint">Unknown</add>
+        <add name="Unk4" type="uint">Unknown</add>
+        <add name="Unk8" type="ushort">Unknown</add>
+        <add name="Unk10" type="ushort">Unknown</add>
+        <add name="Unk12" type="ushort">Unknown</add>
+        <add name="Unk14" type="ushort">Unknown</add>
+        <add name="Unk16" type="ushort">Unknown</add>
+        <add name="Unk18" type="ushort">Unknown</add>
+        <add name="Unk20" type="ushort">Unknown</add>
+        <add name="Unk22" type="float">Unknown</add>
+        <add name="Unk26" type="float">Unknown</add>
+        <add name="Unk30" type="float">Unknown</add>
+        <add name="Unk34" type="float">Unknown</add>
+        <add name="Unk38" type="float">Unknown</add>
+        <add name="Unk42" type="float">Unknown</add>
+        <add name="Unk46" type="float">Unknown</add>
+        <add name="Unk50" type="float">Unknown</add>
+        <add name="Unk54" type="float">Unknown</add>
+        <add name="Unk58" type="float">Unknown</add>
+        <add name="Unk62" type="float">Unknown</add>
+        <add name="Unk66" type="float">Unknown</add>
+        <add name="Unk70" type="float">Unknown</add>
+        <add name="Unk74" type="float">Unknown</add>
+        <add name="Unk78" type="byte">Unknown</add>
+-->
+    </niobject>
+
+    <niobject name="NiUDSObject" inherit="NiObject">
+        Object used in Futurama video-game; developed by Unique Development Studios (UDS).
+        <add name="Name" type="string">Name of this object.</add>
+        <add name="Unknown Bytes" type="byte" arr1="8">Unknown.</add>
+    </niobject>
+
+    <compound name="unknown_ptr_list_in_bsp">
+        <add name="ptr count" type="uint">Unknown.</add>
+        <add name="ptr list" type="uint" arr1="ptr count">Probably some pointers.</add>
+    </compound>
+
+    <compound name="unknown_in_bsp">
+        <add name="type" type="uint">Unknown.</add>
+        <add name="unk1" type="Vector3">Unknown</add>
+        <add name="unk2" type="Vector3">Unknown</add>
+        <add name="unk3" type="float" cond="type != 3">Seen in type 1 and type 2, but not in type 3</add>
+<!--
+        <add name="next" type="unknown_in_bsp" cond="type != 3">Next element</add>
+-->
+        <add name="ptrs" type="unknown_ptr_list_in_bsp" cond="type == 3">Unknown</add>
+
+    </compound>
+
+
+    <!-- Based on Futurama FutPAL00.img: /levels/level1-1/stage1.nif -->
+    <niobject name="NiBsp" inherit="NiAVObject">
+        <add name="unk1" type="Vector3">Unknown</add>
+        <add name="unk2" type="Vector3">Unknown</add>
+        <add name="unk3" type="uint">Unknown.</add>
+        <add name="unk3b" type="uint">Unknown.</add>
+        <add name="unk4" type="byte" arr1="20*unk3">Unknown.</add>
+        <add name="unk6" type="Vector3" arr1="unk3b">Unknown</add>
+
+        <!-- FIXME: Where's the count from? -->
+        <!-- Based on Futurama FutPAL00.img: /levels/level1-1/stage1.nif must be 171-->
+        <!-- Based on Futurama FutPAL00.img: /levels/level1-1/stage2.nif must be 1585-->
+        <add name="unk7" type="unknown_in_bsp" arr1="1585">Unknown.</add>
+
+        <add name="unk8" type="uint">Unknown.</add>
+        <add name="unk9" type="unknown_ptr_list_in_bsp" arr1="unk8">Unknown.</add>
+
+        <add name="unk10" type="unknown_ptr_list_in_bsp">Unknown.</add>
+        
+<!--
+        <!- - FIXME: Probably unknown_in_bsp list? - ->
+        <add name="unk7" type="byte" arr1="252">Unknown; appears to be { uint32, vec3, vec4 } .</add>
+
+        <add name="unk8" type="uint">Unknown.</add>
+        <add name="unk9" type="uint" arr1="unk8">Probably some pointers.</add>
+
+        <add name="unk10 to unk12" type="unknown_in_bsp">Unknown.</add>
+
+        <add name="unk13" type="uint">Unknown.</add>
+        <add name="unk14" type="uint" arr1="unk13">Probably some pointers.</add>
+
+        <add name="unk15 to unk17" type="unknown_in_bsp">Unknown.</add>
+
+        <add name="unk18" type="uint">Unknown</add>
+        <add name="unk19" type="uint" arr1="unk18">Probably some pointers.</add>
+
+        <add name="unk20 to unk23" type="unknown_in_bsp">Unknown.</add>
+        <add name="unk24 to unk26" type="unknown_in_bsp">Unknown.</add>
+
+        <add name="unk27" type="uint">Unknown</add>
+        <add name="unk28" type="uint" arr1="unk27">Probably some pointers.</add>
+
+        <add name="unk29 to unk31" type="unknown_in_bsp">Unknown.</add>
+
+        <add name="unk32" type="uint">Unknown</add>
+        <add name="unk33" type="uint" arr1="unk32">Probably some pointers.</add>
+
+        <add name="unk34" type="unknown_in_bsp">Unknown</add>
+        <add name="unk35" type="unknown_in_bsp">Unknown</add>
+        <add name="unk36" type="unknown_in_bsp">Unknown</add>
+-->
+
+    </niobject>
+
+    <niobject name="NiFltAnimationNode" inherit="NiAVObject">
+        <!-- <add name="Name" type="string">Name of this object.</add>  -->
+        <add name="unk1" type="unknown_ptr_list_in_bsp">Unknown.</add>
+        <add name="unk2" type="unknown_ptr_list_in_bsp">Unknown.</add>
+        <add name="unk3" type="uint">Unknown.</add>
+        <add name="unk4" type="float">Unknown.</add>
+    </niobject>
+
+    <niobject name="NiUDSFileObject" inherit="NiAVObject">
+        <!-- <add name="Unknown Bytes" type="byte" arr1="36">Unknown.</add> -->
+        <add name="Length" type="uint">The data length.</add>
+        <add name="Data" type="byte" arr1="Length">The data itself</add>
+    </niobject>
+
+    <!-- Might inherit from NiPlane? -->
+    <niobject name="NiWall" inherit="NiAVObject">
+        <add name="Unknown Bytes" type="byte" arr1="24">Unknown.</add>
+    </niobject>
+
 </niftoolsxml>
