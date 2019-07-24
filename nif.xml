@@ -16,7 +16,8 @@
     <version num="4.0.0.2">Morrowind, Freedom Force</version>
     <version num="4.1.0.12">Dark Age of Camelot</version>
     <version num="4.2.0.2">Civilization IV</version>
-    <version num="4.2.1.0">Dark Age of Camelot, Civilization IV</version>
+    <version num="4.2.1.0">Dark Age of Camelot, Civilization IV, Futurama (Original Xbox)</version>
+    <version num="4.2.1.1">Futurama (PlayStation 2)</version>
     <version num="4.2.2.0">Dark Age of Camelot, Civilization IV, Empire Earth II, Culpa Innata</version>
     <version num="10.0.1.0">Zoo Tycoon 2, Civilization IV, Oblivion</version>
     <version num="10.0.1.2">Oblivion</version>
@@ -2580,12 +2581,16 @@
 
     <niobject name="NiExtraData" abstract="0" inherit="NiObject">
         A generic extra data object.
+
+        <add name="Unknown" type="uint" ver1="4.2.1.1" ver2="4.2.1.1">Unknown, probably a ref?</add>
+        <add name="Unknown" type="uint" ver1="4.2.1.1" ver2="4.2.1.1">Unknown.</add>
+
         <add name="Name" type="string" ver1="10.0.1.0" cond="!BSExtraData">Name of this object.</add>
         <add name="Next Extra Data" type="Ref" template="NiExtraData" ver2="4.2.2.0">Block number of the next extra data object.</add>
 
         <!-- FIXME: This breaks all inhereting types?! -->
-        <add name="Length" type="uint">The data length.</add>
-        <add name="Data" type="byte" arr1="Length">The data itself</add>
+        <add name="Length" type="uint" cond="NiExtraData">The data length.</add>
+        <add name="Data" type="byte" arr1="Length" cond="NiExtraData">The data itself</add>
 
     </niobject>
 
@@ -2780,8 +2785,12 @@
 
     <niobject name="NiAVObject" abstract="1" inherit="NiObjectNET">
         Abstract audio-visual base class from which all of Gamebryo's scene graph objects inherit.
+<!--
+Regression in this for 4.2.1.0 and 4.2.1.1 [futurama Xbox / PS2]:
         <add name="Flags" type="uint" default="14" vercond="(User Version 2 &gt; 26)">Basic flags for AV objects. For Bethesda streams above 26 only.</add>
+-->
         <add name="Flags" type="Flags" ver1="3.0" vercond="(User Version 2 &lt;= 26)">Basic flags for AV objects; commonly 0x000C or 0x000A.</add>
+
         <add name="Translation" type="Vector3">The translation vector.</add>
         <add name="Rotation" type="Matrix33">The rotation part of the transformation matrix.</add>
         <add name="Scale" type="float" default="1.0">Scaling part (only uniform scaling is supported).</add>
@@ -3199,8 +3208,13 @@
         <add name="Material CRC" type="uint" ver1="20.2.0.7" ver2="20.2.0.7" userver="12" />
         <add name="Has Normals" type="bool">Do we have lighting normals? These are essential for proper lighting: if not present, the model will only be influenced by ambient light.</add>
         <add name="Normals" type="Vector3" arr1="Num Vertices" cond="Has Normals">The lighting normals.</add>
+
+<!--
+Not supported by pyffi, also not necessary for futurama
         <add name="Tangents" type="Vector3" arr1="Num Vertices" cond="(Has Normals) &amp;&amp; ((Vector Flags | BS Vector Flags) &amp; 4096)" ver1="10.1.0.0">Tangent vectors.</add>
         <add name="Bitangents" type="Vector3" arr1="Num Vertices" cond="(Has Normals) &amp;&amp; ((Vector Flags | BS Vector Flags) &amp; 4096)" ver1="10.1.0.0">Bitangent vectors.</add>
+-->
+
         <!-- TODO: NiBound -->
         <add name="Center" type="Vector3">Center of the bounding box (smallest box that contains all vertices) of the mesh.</add>
         <add name="Radius" type="float">Radius of the mesh: maximal Euclidean distance between the center and all vertices.</add>
@@ -3220,7 +3234,12 @@
 
             Note: for compatibility with NifTexture, set this value to either 0x00000000 or 0xFFFFFFFF.
         </add>
+<!--
+Not supported by pyffi
         <add name="UV Sets" type="TexCoord" arr1="((Num UV Sets &amp; 63) | (Vector Flags &amp; 63) | (BS Vector Flags &amp; 1))" arr2="Num Vertices">The UV texture coordinates. They follow the OpenGL standard: some programs may require you to flip the second coordinate.</add>
+-->
+        <add name="UV Sets" type="TexCoord" arr1="(Num UV Sets &amp; 63)" arr2="Num Vertices">The UV texture coordinates. They follow the OpenGL standard: some programs may require you to flip the second coordinate.</add>
+
         <add name="Consistency Flags" type="ConsistencyType" ver1="10.0.1.0" default="CT_MUTABLE">Consistency Flags</add>
         <add name="Additional Data" type="Ref" template="AbstractAdditionalGeometryData" ver1="20.0.0.4">Unknown.</add>
     </niobject>
@@ -4537,8 +4556,9 @@
 
     <niobject name="NiTextKeyExtraData" abstract="0" inherit="NiExtraData">
         Extra data, used to name different animation sequences.
-        <add name="Unknown Int 1" type="uint" ver2="4.2.2.0">Unknown.  Always equals zero in all official files.</add>
+        <add name="Unknown Int 1" type="uint" ver2="4.2.0.0">Unknown.  Always equals zero in all official files.</add>
         <add name="Num Text Keys" type="uint">The number of text keys that follow.</add>
+
         <add name="Text Keys" type="Key" arg="1" template="string" arr1="Num Text Keys">List of textual notes and at which time they take effect. Used for designating the start and stop of animations and the triggering of sounds.</add>
     </niobject>
 
@@ -7384,6 +7404,9 @@
 
     </compound>
 
+    <compound name="Unk20Bytes">
+        <add name="type" type="byte" arr1="20">Unknown.</add>
+    </compound>
 
     <!-- Based on Futurama FutPAL00.img: /levels/level1-1/stage1.nif -->
     <niobject name="NiBsp" inherit="NiAVObject">
@@ -7391,51 +7414,49 @@
         <add name="unk2" type="Vector3">Unknown</add>
         <add name="unk3" type="uint">Unknown.</add>
         <add name="unk3b" type="uint">Unknown.</add>
-        <add name="unk4" type="byte" arr1="20*unk3">Unknown.</add>
+        <add name="unk4" type="Unk20Bytes" arr1="unk3">Unknown.</add>
         <add name="unk6" type="Vector3" arr1="unk3b">Unknown</add>
 
-        <!-- FIXME: Where's the count from? -->
-        <!-- Based on Futurama FutPAL00.img: /levels/level1-1/stage1.nif must be 171-->
-        <!-- Based on Futurama FutPAL00.img: /levels/level1-1/stage2.nif must be 1585-->
-        <add name="unk7" type="unknown_in_bsp" arr1="1585">Unknown.</add>
+
+
+        <!-- FIXME: Where's the count for unk7 come from? -->
+
+        <!--
+
+          I found these using..
+
+          reset && NIFXMLPATH=nifxml/ ./inspect_nif.py levels/level5-1/level5_bender.nif |& grep ding\ type -A1 | grep value
+
+          .. then counting the lines until the first bad ones [not value 0 - 3]
+
+        -->
+
+        <!-- Based on Futurama FutPAL00.img: /levels/level1-1/stage1.nif must be 171 -->
+        <!-- type count: 0:24; 1:31; 2:30; 3:86 -->
+
+        <!-- Based on Futurama FutPAL00.img: /levels/level1-1/stage2.nif must be 1585 -->
+        <!-- type count: 0:250; 1:278; 2:264; 3:793 -->
+
+        <!-- Based on Futurama FutPAL00.img: /levels/level1-4/onya.nif must be 4229 -->
+        <!-- type count: ? -->
+
+        <!-- Based on Futurama FutPAL00.img: /levels/level5-1/level5_bender.nif must be 2315 -->
+        <!-- type count: ? -->
+
+        <!-- Based on Futurama FutPAL00.img: /levels/level5-3/level5_fry.nif must be 4833 -->
+        <!-- type count: ? -->
+
+        <!-- Based on Futurama FutPAL00.img: /levels/testlevel/theroom3.nif must be 879 -->
+        <!-- type count: ? -->
+
+        <add name="unk7" type="unknown_in_bsp" arr1="4229">Unknown.</add>
+
+
 
         <add name="unk8" type="uint">Unknown.</add>
         <add name="unk9" type="unknown_ptr_list_in_bsp" arr1="unk8">Unknown.</add>
 
         <add name="unk10" type="unknown_ptr_list_in_bsp">Unknown.</add>
-        
-<!--
-        <!- - FIXME: Probably unknown_in_bsp list? - ->
-        <add name="unk7" type="byte" arr1="252">Unknown; appears to be { uint32, vec3, vec4 } .</add>
-
-        <add name="unk8" type="uint">Unknown.</add>
-        <add name="unk9" type="uint" arr1="unk8">Probably some pointers.</add>
-
-        <add name="unk10 to unk12" type="unknown_in_bsp">Unknown.</add>
-
-        <add name="unk13" type="uint">Unknown.</add>
-        <add name="unk14" type="uint" arr1="unk13">Probably some pointers.</add>
-
-        <add name="unk15 to unk17" type="unknown_in_bsp">Unknown.</add>
-
-        <add name="unk18" type="uint">Unknown</add>
-        <add name="unk19" type="uint" arr1="unk18">Probably some pointers.</add>
-
-        <add name="unk20 to unk23" type="unknown_in_bsp">Unknown.</add>
-        <add name="unk24 to unk26" type="unknown_in_bsp">Unknown.</add>
-
-        <add name="unk27" type="uint">Unknown</add>
-        <add name="unk28" type="uint" arr1="unk27">Probably some pointers.</add>
-
-        <add name="unk29 to unk31" type="unknown_in_bsp">Unknown.</add>
-
-        <add name="unk32" type="uint">Unknown</add>
-        <add name="unk33" type="uint" arr1="unk32">Probably some pointers.</add>
-
-        <add name="unk34" type="unknown_in_bsp">Unknown</add>
-        <add name="unk35" type="unknown_in_bsp">Unknown</add>
-        <add name="unk36" type="unknown_in_bsp">Unknown</add>
--->
 
     </niobject>
 
