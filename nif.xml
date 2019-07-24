@@ -3834,8 +3834,12 @@ Not supported by pyffi
         NiPalette objects represent mappings from 8-bit indices to 24-bit RGB or 32-bit RGBA colors.
         <add name="Has Alpha" type="byte" /> <!-- Not bool as always 8-bit -->
         <add name="Num Entries" type="uint" default="256">The number of palette entries. Always 256 but can also be 16.</add>
+<!--
+Bug in pyffi? NumEntries is 256, but it won't accept them
         <add name="Palette" type="ByteColor4" arr1="16" cond="Num Entries == 16">The color palette.</add>
         <add name="Palette" type="ByteColor4" arr1="256" cond="Num Entries != 16">The color palette.</add>
+-->
+        <add name="Palette" type="ByteColor4" arr1="256">The color palette.</add>
     </niobject>
 
     <niobject name="NiParticleBomb" abstract="0" inherit="NiParticleModifier">
@@ -4037,6 +4041,7 @@ Not supported by pyffi
         <add name="Num Faces" type="uint" ver1="10.3.0.6" default="1" />
         <add name="Pixel Data" type="byte" binary="1" arr1="Num Pixels" ver2="10.3.0.5" />
         <add name="Pixel Data" type="byte" binary="1" arr1="Num Pixels * Num Faces" ver1="10.3.0.6" />
+        <add name="Unknown 1" type="uint" ver1="4.2.1.1" ver2="4.2.1.1" />
     </niobject>
 
     <niobject name="NiPlanarCollider" abstract="0" inherit="NiParticleModifier">
@@ -4486,7 +4491,7 @@ Not supported by pyffi
         <add name="Is Static" type="byte" default="1">If set, then the application cannot assume that any dynamic changes to the pixel data will show in the rendered image.</add>
         <add name="Direct Render" type="bool" default="1" ver1="10.1.0.103">A hint to the renderer that the texture can be loaded directly from a texture file into a renderer-specific resource, bypassing the NiPixelData object.</add>
         <add name="Persist Render Data" type="bool" default="0" ver1="20.2.0.4">Pixel Data is NiPersistentSrcTextureRendererData instead of NiPixelData.</add>
-        <add name="Unknown data 1" type="uint" ver2="4.2.1.0">Unknown.</add>
+        <add name="Unknown data 1" type="uint" ver2="4.2.1.1">Unknown.</add>
     </niobject>
 
     <niobject name="NiSpecularProperty" abstract="0" inherit="NiProperty">
@@ -7431,6 +7436,8 @@ Not supported by pyffi
 
         -->
 
+        <!-- Original Xbox -->
+
         <!-- Based on Futurama FutPAL00.img: /levels/level1-1/stage1.nif must be 171 -->
         <!-- type count: 0:24; 1:31; 2:30; 3:86 -->
 
@@ -7449,7 +7456,13 @@ Not supported by pyffi
         <!-- Based on Futurama FutPAL00.img: /levels/testlevel/theroom3.nif must be 879 -->
         <!-- type count: ? -->
 
-        <add name="unk7" type="unknown_in_bsp" arr1="4229">Unknown.</add>
+
+        <!-- PS2 -->
+
+        <!-- Based on Futurama FutPAL00.img: /levels/level1-1/stage1.nif must be 175 -->
+        <!-- type count: ? -->
+
+        <add name="unk7" type="unknown_in_bsp" arr1="175">Unknown.</add>
 
 
 
